@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorand Query Chatbot</title>
+    <style>
+        :root {
+            --vscode-bg: #1e1e1e;
+            --vscode-bg-light: #252526;
+            --vscode-text: #cccccc;
+            --vscode-accent: #0078d4;
+            --vscode-accent-hover: #2089e2;
+            --vscode-accent-dark: #005a9e;
+            --user-msg-bg: #2c5282;
+            --assistant-msg-bg: #2d3748;
+            --border-radius: 8px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--vscode-bg);
+            color: var(--vscode-text);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        #header {
+            display: flex;
+            align-items: center;
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #header h1 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        #header .logo {
+            width: 24px;
+            height: 24px;
+            margin-right: var(--spacing-md);
+            background-color: var(--vscode-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        #chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md);
+            background-color: var(--vscode-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        #chat-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #chat-area::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        .message-container {
+            display: flex;
+            margin-bottom: var(--spacing-lg);
+            align-items: flex-start;
+        }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .user-avatar {
+            background-color: var(--vscode-accent);
+            color: white;
+        }
+
+        .assistant-avatar {
+            background-color: #4a5568;
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+            max-width: calc(100% - 40px);
+        }
+
+        .message {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            overflow-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            background-color: var(--user-msg-bg);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .assistant-message {
+            background-color: var(--assistant-msg-bg);
+            color: var(--vscode-text);
+            border-top-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: var(--spacing-md);
+            background-color: var(--assistant-msg-bg);
+            border-radius: var(--border-radius);
+            color: var(--vscode-text);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .typing-animation {
+            display: inline-flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            background-color: var(--vscode-bg-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #question-input {
+            flex: 1;
+            padding: var(--spacing-md);
+            border: none;
+            background-color: transparent;
+            color: var(--vscode-text);
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            min-height: 24px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        #question-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #send-button {
+            background-color: var(--vscode-accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: var(--spacing-sm);
+            transition: background-color 0.2s;
+        }
+
+        #send-button:hover {
+            background-color: var(--vscode-accent-hover);
+        }
+
+        #send-button:active {
+            background-color: var(--vscode-accent-dark);
+        }
+
+        #send-button:disabled {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+        }
+
+        .send-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: var(--spacing-lg);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            color: var(--vscode-accent);
+        }
+
+        .empty-state h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            max-width: 400px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            margin-top: var(--spacing-md);
+        }
+
+        .suggestion-chip {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .code-block {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            padding: var(--spacing-md);
+            margin: var(--spacing-sm) 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --vscode-bg: #f5f5f5;
+                --vscode-bg-light: #ffffff;
+                --vscode-text: #333333;
+                --user-msg-bg: #0078d4;
+                --assistant-msg-bg: #e6e6e6;
+            }
+
+            .assistant-message {
+                color: #333333;
+            }
+
+            .assistant-avatar {
+                background-color: #a0aec0;
+            }
+
+            .typing-indicator {
+                background-color: #e6e6e6;
+            }
+
+            .typing-dot {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .empty-state {
+                color: rgba(0, 0, 0, 0.6);
+            }
+
+            .code-block {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="header">
+            <div class="logo">A</div>
+            <h1>Algorand Query Assistant</h1>
+        </div>
+        
+        <div id="chat-area">
+            <div class="empty-state">
+                <div class="empty-state-icon">🤖</div>
+                <h2>Algorand Query Assistant</h2>
+                <p>Ask any questions about Algorand development, smart contracts, or blockchain concepts. I'm here to help!</p>
+                <div class="suggestion-chips">
+                    <div class="suggestion-chip">How do I create a smart contract?</div>
+                    <div class="suggestion-chip">What is Algorand?</div>
+                    <div class="suggestion-chip">TEAL language basics</div>
+                    <div class="suggestion-chip">Setting up Algorand SDK</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="input-container">
+            <textarea id="question-input" placeholder="Ask an Algorand question..." rows="1"></textarea>
+            <button id="send-button" title="Send message">
+                <svg class="send-icon" viewBox="0 0 24 24">
+                    <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get VS Code API
+        const vscode = acquireVsCodeApi();
+
+        // Elements
+        const chatArea = document.getElementById('chat-area');
+        const questionInput = document.getElementById('question-input');
+        const sendButton = document.getElementById('send-button');
+        const emptyState = document.querySelector('.empty-state');
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
+
+        // Chat history
+        let chatHistory = [];
+
+        // Auto-resize input field
+        function autoResizeInput() {
+            questionInput.style.height = 'auto';
+            questionInput.style.height = (questionInput.scrollHeight) + 'px';
+        }
+
+        questionInput.addEventListener('input', autoResizeInput);
+
+        // Handle send button click
+        sendButton.addEventListener('click', () => {
+            sendQuestion();
+        });
+
+        // Handle Enter key press (Shift+Enter for new line)
+        questionInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+
+        // Add event listeners to suggestion chips
+        suggestionChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                questionInput.value = chip.textContent;
+                sendQuestion();
+            });
+        });
+
+        // Format code blocks in messages (basic detection)
+        function formatMessageContent(text) {
+            // Simple code block detection
+            const codeBlockRegex = /`{3}([\s\S]*?)`{3}/g;
+            return text.replace(codeBlockRegex, (match, code) => {
+                return `<div class="code-block">${code}</div>`;
+            });
+        }
+
+        // Create timestamp for messages
+        function getTimeString() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Send question to extension
+        function sendQuestion() {
+            const question = questionInput.value.trim();
+            if (question) {
+                // Remove empty state if present
+                if (emptyState && emptyState.parentNode === chatArea) {
+                    chatArea.removeChild(emptyState);
+                }
+
+                // Add user message to chat
+                addMessage(question, 'user');
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Send to extension
+                vscode.postMessage({ command: 'query', text: question });
+                
+                // Clear input and reset height
+                questionInput.value = '';
+                autoResizeInput();
+                
+                // Store in chat history
+                chatHistory.push({ role: 'user', content: question });
+            }
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingContainer = document.createElement('div');
+            typingContainer.className = 'message-container';
+            typingContainer.id = 'typing-indicator-container';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar assistant-avatar';
+            avatar.textContent = 'A';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-animation">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            typingDiv.style.display = 'block';
+            
+            contentDiv.appendChild(typingDiv);
+            typingContainer.appendChild(avatar);
+            typingContainer.appendChild(contentDiv);
+            
+            chatArea.appendChild(typingContainer);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingContainer = document.getElementById('typing-indicator-container');
+            if (typingContainer) {
+                chatArea.removeChild(typingContainer);
+            }
+        }
+
+        // Add message to chat area
+        function addMessage(text, role) {
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'message-container';
+            
+            const avatar = document.createElement('div');
+            avatar.className = `message-avatar ${role}-avatar`;
+            avatar.textContent = role === 'user' ? 'U' : 'A';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+            
+            // Format message content
+            messageDiv.innerHTML = formatMessageContent(text);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getTimeString();
+            
+            contentDiv.appendChild(messageDiv);
+            contentDiv.appendChild(timeDiv);
+            
+            messageContainer.appendChild(avatar);
+            messageContainer.appendChild(contentDiv);
+            
+            chatArea.appendChild(messageContainer);
+            chatArea.scrollTop = chatArea.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // Handle messages from extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.command === 'answer') {
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                // Add assistant message to chat
+                addMessage(message.text, 'assistant');
+                
+                // Store in chat history
+                chatHistory.push({ role: 'assistant', content: message.text });
+            }
+        });
+
+        // Focus input on page load
+        window.addEventListener('load', () => {
+            questionInput.focus();
+        });
+
+        // Adjust input height on window resize
+        window.addEventListener('resize', autoResizeInput);
+    </script>
+</body>
+</html>

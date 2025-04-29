@@ -1,0 +1,62 @@
+{
+  "name": "algorand-query-assistant",
+  "displayName": "Algorand Query Assistant",
+  "description": "VS Code extension for Algorand blockchain queries",
+  "version": "0.0.3",
+  "publisher": "SanyamKarnavat",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "algorand",
+    "blockchain",
+    "query",
+    "assistant",
+    "development"
+  ],
+  "activationEvents": [
+    "onCommand:algorandQueryAssistant.query",
+    "onCommand:algorandQueryAssistant.openChatbot"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "algorandQueryAssistant.query",
+        "title": "Algorand Query: Ask a Question"
+      },
+      {
+        "command": "algorandQueryAssistant.openChatbot",
+        "title": "Algorand Query: Open Chatbot"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint src --ext js",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "fuzzball": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.99.0",
+    "@types/node": "20.x",
+    "@types/mocha": "^10.0.10",
+    "eslint": "^9.23.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YourGitHubUsername/algorand-query-assistant.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YourGitHubUsername/algorand-query-assistant/issues"
+  },
+  "homepage": "https://github.com/YourGitHubUsername/algorand-query-assistant#readme"
+}
