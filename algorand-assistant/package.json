@@ -1,8 +1,8 @@
 {
   "name": "algorand-query-assistant",
-  "displayName": "Algorand Query Assistant",
+  "displayName": "Algorand Assistant",
   "description": "VS Code extension for Algorand blockchain queries",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "publisher": "SanyamKarnavat",
   "engines": {
     "vscode": "^1.99.0"
@@ -58,5 +58,6 @@
   "bugs": {
     "url": "https://github.com/YourGitHubUsername/algorand-query-assistant/issues"
   },
-  "homepage": "https://github.com/YourGitHubUsername/algorand-query-assistant#readme"
+  "homepage": "https://github.com/YourGitHubUsername/algorand-query-assistant#readme",
+  "icon": "icon.png"
 }
