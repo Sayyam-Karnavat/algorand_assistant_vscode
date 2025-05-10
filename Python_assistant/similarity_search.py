@@ -53,7 +53,7 @@ if __name__ == "__main__":
     embedded_data = embed_qa_pairs(preprocessed_data)
     
     # Test query
-    query = "What is ARC-0000 used for in Algorand?"
+    query = "What does ARC-0 for in Algorand?"
     question, answer, score = find_best_match(query, embedded_data)
     
     print(f"Query: {query}")
