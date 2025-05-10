@@ -1,9 +1,11 @@
 import spacy
 import re
 from typing import List, Dict
+import json
+
 
 # Load spacy model (English, medium-sized for balance of speed and accuracy)
-nlp = spacy.load("en_core_web_md", disable=["parser", "ner"])  # Disable unused components for speed
+nlp = spacy.load("en_core_web_md", disable=["parser", "ner"])
 
 def preprocess_text(text: str) -> str:
     """
@@ -44,18 +46,19 @@ def preprocess_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
 
 # Example usage
 if __name__ == "__main__":
-    qa_pairs = [
-        {
-            "question": "What is the purpose of ARC-0000 in the Algorand ecosystem?",
-            "answer": "ARC-0000 defines the Algorand Request for Comments (ARC) process, outlining how standards are proposed, reviewed, and adopted to ensure interoperability and consistency in Algorand’s blockchain development."
-        },
-        {
-            "question": "What does ARC-0003 specify for Algorand Standard Assets (ASAs)?",
-            "answer": "ARC-0003 defines the standard for fungible tokens on Algorand, specifying fields like total supply, decimals, and metadata for asset creation and management."
-        }
-    ]
+    with open("qa_pairs.json" , "r") as f:
+        qa_pairs = json.load(f)
     
     preprocessed_data = preprocess_qa_pairs(qa_pairs)
     for pair in preprocessed_data:
+        '''
+        Show the sample cleaned data 
+        '''
         print(f"Processed Question: {pair['question']}")
         print(f"Processed Answer: {pair['answer']}\n")
+        break
+
+    # Save the cleaned data back to json file 
+    with open("qa_pairs.json" , "w") as f:
+        json.dump(preprocessed_data , f)
+        
