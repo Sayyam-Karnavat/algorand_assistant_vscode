@@ -7,6 +7,23 @@ import json
 # Load spacy model (English, medium-sized for balance of speed and accuracy)
 nlp = spacy.load("en_core_web_md", disable=["parser", "ner"])
 
+def clean_utf8_text(text: str) -> str:
+    """
+    Remove characters not recognized by UTF-8 encoding from the input text.
+    Args:
+        text: Input text that may contain invalid UTF-8 characters
+    Returns:
+        Cleaned text with only valid UTF-8 characters
+    """
+    # Step 1: Encode to UTF-8 and decode with 'ignore' to remove invalid characters
+    cleaned_text = text.encode('utf-8', errors='ignore').decode('utf-8')
+    
+    # Step 2: Remove non-printable characters (e.g., control characters)
+    cleaned_text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', cleaned_text)
+    
+    return cleaned_text
+
+
 def preprocess_text(text: str) -> str:
     """
     Clean and preprocess text: remove special characters, stop words, and lemmatize.
