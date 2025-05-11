@@ -1,25 +1,14 @@
 import json
 import re
 from typing import List, Dict
-from langchain_ollama import OllamaEmbeddings ,OllamaLLM
+from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain.prompts import PromptTemplate
+from preprocess import preprocess_text
 
-def clean_utf8_text(text: str) -> str:
-    """
-    Remove invalid UTF-8 characters and non-essential special characters, preserve identifiers.
-    Args:
-        text: Input text
-    Returns:
-        Cleaned text
-    """
-    # Remove invalid UTF-8 characters
-    text = text.encode('utf-8', errors='ignore').decode('utf-8')
-    # Remove non-printable characters, keep letters, numbers, spaces, and hyphens
-    text = re.sub(r'[\x00-\x1F\x7F-\x9F]|[^a-zA-Z0-9\s-]', '', text.lower())
-    return text.strip()
+
 
 def load_qa_pairs(file_path: str) -> List[Dict]:
     """Load QA pairs from JSON file."""
@@ -36,8 +25,7 @@ def prepare_documents(qa_pairs: List[Dict]) -> List[Document]:
     """
     documents = []
     for pair in qa_pairs:
-        cleaned_question = clean_utf8_text(pair["question"])
-        # Store original question and answer in metadata
+        cleaned_question = preprocess_text(pair["question"])
         doc = Document(
             page_content=cleaned_question,
             metadata={
@@ -70,16 +58,16 @@ def setup_rag_chain(vector_store: FAISS) -> RetrievalQA:
     """
     llm = OllamaLLM(model="llama3")
     
-    # Custom prompt to ensure precise answer generation
-    prompt_template = """You are an expert on the Algorand blockchain. Given the following question and its answer from the dataset, provide a concise and accurate response based on the provided answer. Do not add external information.
+    # Custom prompt using 'context' for retrieved documents
+    prompt_template = """You are an expert on the Algorand blockchain. Given the following question and the context from the dataset, provide a concise and accurate response based on the provided context. Do not add external information.
 
     Question: {question}
-    Answer from dataset: {answer}
+    Context: {context}
 
     Response: """
     
     prompt = PromptTemplate(
-        input_variables=["question", "answer"],
+        input_variables=["question", "context"],
         template=prompt_template
     )
     
@@ -87,7 +75,7 @@ def setup_rag_chain(vector_store: FAISS) -> RetrievalQA:
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=vector_store.as_retriever(search_kwargs={"k": 1}),  # Retrieve top 1 match
+        retriever=vector_store.as_retriever(search_kwargs={"k": 1}),
         chain_type_kwargs={"prompt": prompt},
         return_source_documents=True
     )
@@ -119,14 +107,14 @@ def main():
             break
         
         # Clean query
-        cleaned_query = clean_utf8_text(query)
+        cleaned_query = preprocess_text(query)
         
         # Run RAG chain
         result = qa_chain.invoke({"query": cleaned_query})
         
         # Extract answer and source
         answer = result["result"]
-        source = result["source_documents"][0]
+        source = result["source_documents"][0].metadata
         
         print(f"\nMatched Question: {source['original_question']}")
         print(f"Answer: {answer}")
