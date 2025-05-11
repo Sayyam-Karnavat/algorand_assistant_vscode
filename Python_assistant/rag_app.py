@@ -1,5 +1,4 @@
 import json
-import re
 from typing import List, Dict
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_community.vectorstores import FAISS

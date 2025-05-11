@@ -2,20 +2,25 @@ import spacy
 import re
 from typing import List, Dict
 import json
+import unicodedata
 
 # Load spacy model (English, medium-sized for balance of speed and accuracy)
 nlp = spacy.load("en_core_web_md", disable=["parser", "ner"])  # Disable unused components for speed
 
 def clean_utf8_text(text: str) -> str:
     """
-    Remove characters not recognized by UTF-8 encoding from the input text.
+    Remove invalid UTF-8 characters and normalize Unicode characters.
     Args:
-        text: Input text that may contain invalid UTF-8 characters
+        text: Input text that may contain invalid UTF-8 or special characters
     Returns:
-        Cleaned text with only valid UTF-8 characters
+        Cleaned text with normalized characters
     """
-    cleaned_text = text.encode('utf-8', errors='ignore').decode('utf-8')
-    cleaned_text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', cleaned_text)
+    # Replace curly apostrophes and quotes with straight ones
+    text = text.replace("’", "'").replace("'", "'").replace("'", "'")
+    # Normalize Unicode to ASCII
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    # Remove control characters
+    cleaned_text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', text)
     return cleaned_text
 
 def normalize_number(token: str) -> str:
@@ -42,8 +47,8 @@ def preprocess_text(text: str) -> str:
     # Clean UTF-8 invalid characters
     text = clean_utf8_text(text)
     
-    # Remove special characters except letters, numbers, and spaces; replace hyphens with spaces
-    text = re.sub(r'[^a-zA-Z0-9\s]', '', text.lower().replace('-', ' '))
+    # Remove special characters except letters, numbers, spaces, and apostrophes
+    text = re.sub(r'[^a-zA-Z0-9\s\']', '', text.lower().replace('-', ' '))
     
     # Process with spacy
     doc = nlp(text)
