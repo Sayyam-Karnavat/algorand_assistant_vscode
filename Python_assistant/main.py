@@ -42,9 +42,14 @@ def main():
             break
         
         question, answer, score = find_best_match(query, embedded_data)
-        print(f"\nBest Match Question: {question}")
-        print(f"Answer: {answer}")
-        print(f"Similarity Score: {score:.4f}\n")
+
+        if score > 0.70:
+
+            print(f"\nBest Match Question: {question}")
+            print(f"Answer: {answer}")
+            print(f"Similarity Score: {score:.4f}\n")
+        else:
+            print("No relevant answer found for your query.")
 
 if __name__ == "__main__":
     main()

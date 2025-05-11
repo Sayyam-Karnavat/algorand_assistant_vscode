@@ -48,12 +48,9 @@ def preprocess_text(text: str) -> str:
     # Process with spacy
     doc = nlp(text)
     
-    # Keep non-stop words, lemmatized, including tokens with numbers
+    # Keep words, lemmatized, including tokens with numbers
     tokens = []
     for token in doc:
-        # Skip stop words
-        if token.is_stop:
-            continue
         # Keep tokens that are alphabetic, numeric, or alphanumeric
         if token.is_alpha or token.is_digit or token.text.isalnum():
             # Normalize numbers (e.g., '0000' -> '0', '0069' -> '69')
