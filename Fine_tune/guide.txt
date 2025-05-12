@@ -1,0 +1,5 @@
+
+# Convert any model from hugging face to onnx format
+# And also how to quantize it ?
+
+pip install transformers optimum[onnx] onnxruntime
