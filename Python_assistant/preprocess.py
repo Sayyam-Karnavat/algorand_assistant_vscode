@@ -18,52 +18,39 @@ def clean_utf8_text(text: str) -> str:
     # Replace curly apostrophes and quotes with straight ones
     text = text.replace("’", "'").replace("'", "'").replace("'", "'")
     # Normalize Unicode to ASCII
-    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
     # Remove control characters
-    cleaned_text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', text)
-    return cleaned_text
+    text = "".join(c for c in text if unicodedata.category(c) != "Cc")
+    return text
 
-def normalize_number(token: str) -> str:
+def normalize_number(text: str) -> str:
     """
     Normalize numeric tokens by stripping leading zeros.
     Args:
-        token: Input token (e.g., '0000', '0069')
+        text: Input text to be processed
     Returns:
-        Normalized number (e.g., '0', '69')
+        Processed text with normalized numeric tokens
     """
-    if token.isdigit():
-        stripped = token.lstrip('0')
-        return stripped if stripped else '0'  # Return '0' if all zeros, else stripped number
-    return token
+    return re.sub(r"(\d+)", lambda m: m.group(1).zfill(len(m.group())), text)
 
 def preprocess_text(text: str) -> str:
     """
-    Clean and preprocess text: split identifiers (e.g., arc-0000), normalize numbers, remove stop words, and lemmatize.
+    Preprocess text data for NLP tasks.
     Args:
-        text: Input text (question or answer)
+        text: Input text to be processed
     Returns:
-        Cleaned, lemmatized text with numbers preserved and normalized
+        Processed text with normalized characters, lemmatized words, and removed stop words
     """
-    # Clean UTF-8 invalid characters
+    # Normalize Unicode characters
     text = clean_utf8_text(text)
-    
-    # Remove special characters except letters, numbers, spaces, and apostrophes
-    text = re.sub(r'[^a-zA-Z0-9\s\']', '', text.lower().replace('-', ' '))
-    
-    # Process with spacy
-    doc = nlp(text)
-    
-    # Keep words, lemmatized, including tokens with numbers
-    tokens = []
-    for token in doc:
-        # Keep tokens that are alphabetic, numeric, or alphanumeric
-        if token.is_alpha or token.is_digit or token.text.isalnum():
-            # Normalize numbers (e.g., '0000' -> '0', '0069' -> '69')
-            normalized_token = normalize_number(token.text)
-            # Lemmatize non-numeric tokens, keep normalized numbers as-is
-            tokens.append(token.lemma_ if token.is_alpha or token.text.isalnum() and not token.is_digit else normalized_token)
-    
-    return ' '.join(tokens)
+    # Tokenize text
+    tokens = nlp.tokenizer.tokens_from_list(text.split())
+    # Lemmatize words
+    lemmatized_tokens = [token.lemma_ for token in tokens]
+    # Remove stop words
+    stop_words = set(nlp.Defaults.stop_words)
+    filtered_lemmas = [lemma for lemma in lemmatized_tokens if lemma not in stop_words]
+    return " ".join(filtered_lemmas)
 
 def preprocess_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
     """
@@ -83,7 +70,6 @@ def preprocess_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
         })
     return preprocessed_pairs
 
-
 # Example usage
 if __name__ == "__main__":
 
@@ -95,7 +81,6 @@ if __name__ == "__main__":
         print(f"Processed Question: {pair['question']}")
         print(f"Processed Answer: {pair['answer']}\n")
         break
-
 
     with open("qa_pairs.json" , "w") as f:
         json.dump(preprocessed_data , f)
