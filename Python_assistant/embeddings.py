@@ -8,7 +8,7 @@ from typing import List, Dict
 import json
 
 # Load pre-trained Sentence-BERT model from TensorFlow Hub
-model_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
+model_url = "https://tfhub.dev/google/universal-sentence_encoder/4"
 embed_model = hub.load(model_url)
 
 def generate_embeddings(texts: List[str]) -> np.ndarray:
@@ -45,9 +45,8 @@ def preprocess_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
 
 # Example usage
 if __name__ == "__main__":
-
-    from preprocess import preprocess_qa_pairs
-
+    import preprocess  # Added missing import statement
+    
     try:
         with open("qa_pairs.json" , "r") as f:
             qa_pairs = json.load(f)
@@ -56,12 +55,11 @@ if __name__ == "__main__":
         print("File not found.")
         exit()
     
-    preproccesed_data = preprocess_qa_pairs(qa_pairs)
-    
-    embedded_data = generate_embeddings(preproccesed_data)
+    processed_qa_pairs = preprocess.preprocess_qa_pairs(qa_pairs)  # Modified variable name
+    embedded_data = generate_embeddings([pair["question"] for pair in processed_qa_pairs] + [pair["answer"] for pair in processed_qa_pairs])
     
     for pair in embedded_data:
-        print(f"Question: {pair['original_question']}")
-        print(f"Question Embedding Shape: {pair['question_embedding'].shape}\n")
+        print(f"Question: {pair}")
+        print(f"Question Embedding Shape: {pair.shape}\n")
         break
 ```
