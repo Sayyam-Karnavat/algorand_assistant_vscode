@@ -44,49 +44,21 @@ def setup_elasticsearch_index(qa_pairs: List[Dict], index_name: str = "qa_pairs"
     return es, index_name
 
 def elasticsearch_search(query: str, es, index_name: str):
-    """Perform Elasticsearch search with custom scoring."""
-    preprocessed_query = preprocess_text(query)
-    query_body = {
-        "query": {
-            "bool": {
-                "should": [
-                    {"match": {"question": {"query": preprocessed_query, "boost": 1}}},
-                    {"match_phrase": {"question": {"query": preprocessed_query, "boost": 2}}}
-                ],
-                "minimum_should_match": 1
-            }
+    """Perform Elasticsearch query to search for answers."""
+    # Tokenize words in the query
+    tokens = [token.text for token in preprocess_text(query)]
+    
+    # Use Elasticsearch's built-in query functions to retrieve relevant documents
+    q = {
+        "multi_match": {
+            "query": tokens,
+            "type": "most_fields"
         }
     }
-    res = es.search(index=index_name, body=query_body)
-    if res["hits"]["hits"]:
-        top_hit = res["hits"]["hits"][0]["_source"]
-        score = res["hits"]["hits"][0]["_score"]
-        print(f"Search Query Tokens: {preprocessed_query.split()}")
-        print(f"Matched Preprocessed Question: {top_hit['question']}")
-        return top_hit["original_question"], top_hit["answer"], score
-    return None, "No match found", 0.0
-
-def main():
-    qa_file = "qa_pairs.json"
-    qa_pairs = load_qa_pairs(qa_file)
+    res = es.search(index=index_name, body={"query": q})
     
-    # Setup Elasticsearch index
-    es, index_name = setup_elasticsearch_index(qa_pairs)
-    
-    # Print sample QA pair
-    print("Sample QA Pair:", qa_pairs[0])
-    
-    # Interactive loop
-    print("Enter your query (or 'quit' to exit):")
-    while True:
-        query = input("> ")
-        if query.lower() == 'quit':
-            break
-        
-        question, answer, score = elasticsearch_search(query, es, index_name)
-        print(f"\nMatched Question: {question}")
-        print(f"Answer: {answer}")
-        print(f"Score: {score:.4f}\n")
+    # Return the top-ranked answer
+    return res["hits"]["hits"][0]["answer"], res["hits"]["hits"][0]["score"]
 
 if __name__ == "__main__":
     main()
