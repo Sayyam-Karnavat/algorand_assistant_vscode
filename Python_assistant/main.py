@@ -1,3 +1,4 @@
+```python
 import json
 import pickle
 from typing import List, Dict
@@ -31,7 +32,7 @@ def main():
         embedded_data = load_embeddings(embeddings_file)
     except FileNotFoundError:
         preprocessed_data = preprocess_qa_pairs(qa_pairs)
-        embedded_data = embed_qa_pairs(preprocessed_data)
+        embedded_data = embed_qa_pairs(preprocessed_data, word2vec_path="word2vec.model")
         save_embeddings(embedded_data, embeddings_file)
     
     # Interactive loop
@@ -53,3 +54,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
