@@ -61,4 +61,4 @@ def elasticsearch_search(query: str, es, index_name: str):
     return res["hits"]["hits"][0]["answer"], res["hits"]["hits"][0]["score"]
 
 if __name__ == "__main__":
-    main()
+    elasticsearch_search()

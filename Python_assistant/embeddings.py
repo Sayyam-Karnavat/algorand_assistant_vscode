@@ -1,3 +1,4 @@
+```python
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = "0"
 import tensorflow as tf
@@ -10,7 +11,7 @@ import json
 model_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
 embed_model = hub.load(model_url)
 
-def get_embeddings(texts: List[str]) -> np.ndarray:
+def generate_embeddings(texts: List[str]) -> np.ndarray:
     """
     Convert texts to dense vectors using the Sentence-BERT model.
     Args:
@@ -20,7 +21,7 @@ def get_embeddings(texts: List[str]) -> np.ndarray:
     """
     return embed_model(texts).numpy()
 
-def embed_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
+def preprocess_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
     """
     Generate embeddings for questions and answers.
     Args:
@@ -32,8 +33,8 @@ def embed_qa_pairs(qa_pairs: List[Dict]) -> List[Dict]:
     answers = [pair["answer"] for pair in qa_pairs]
     
     # Generate embeddings
-    question_embeddings = get_embeddings(questions)
-    answer_embeddings = get_embeddings(answers)
+    question_embeddings = generate_embeddings(questions)
+    answer_embeddings = generate_embeddings(answers)
     
     # Add embeddings to QA pairs
     for i, pair in enumerate(qa_pairs):
@@ -47,15 +48,20 @@ if __name__ == "__main__":
 
     from preprocess import preprocess_qa_pairs
 
-
-    with open("qa_pairs.json" , "r") as f:
-        qa_pairs = json.load(f)
-
+    try:
+        with open("qa_pairs.json" , "r") as f:
+            qa_pairs = json.load(f)
+    
+    except FileNotFoundError:
+        print("File not found.")
+        exit()
+    
     preproccesed_data = preprocess_qa_pairs(qa_pairs)
     
-    embedded_data = embed_qa_pairs(preproccesed_data)
+    embedded_data = generate_embeddings(preproccesed_data)
     
     for pair in embedded_data:
         print(f"Question: {pair['original_question']}")
         print(f"Question Embedding Shape: {pair['question_embedding'].shape}\n")
         break
+```
