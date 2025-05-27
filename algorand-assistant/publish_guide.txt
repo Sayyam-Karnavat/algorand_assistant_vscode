@@ -1,0 +1,21 @@
+# Project Structure 
+
+algorand-query-assistant/
+    ├── src/
+    │   ├── chatbot.html
+    │   ├── qa_pairs.json
+    │   ├── query.js
+    ├── extension.js
+    ├── package.json
+    ├── README.md
+    ├── LICENSE
+    ├── CHANGELOG.md
+
+
+Step 2 :- npm install -g @vscode/vsce
+
+Step 3 :- vsce package
+
+Step 4 :- vsce login "YourPublisherName"
+
+Step 5 :- vsce publish

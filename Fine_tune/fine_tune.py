@@ -77,5 +77,5 @@ trainer = Trainer(
 )
 
 trainer.train()
-model.save_pretrained('./fine_tuned_llama')
-tokenizer.save_pretrained('./fine_tuned_llama')
+model.save_pretrained('./fine_tuned_model')
+tokenizer.save_pretrained('./fine_tuned_model')
