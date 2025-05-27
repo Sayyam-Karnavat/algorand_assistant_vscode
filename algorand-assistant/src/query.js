@@ -83,11 +83,34 @@ function cosineSimilarity(vec1, vec2) {
     return norm1 * norm2 === 0 ? 0 : dotProduct / (norm1 * norm2);
 }
 
+async function fetchAnswerFromAPI(queryText) {
+    try {
+        const response = await axios.post('https://algorand-assistant-vscode.onrender.com/answer_query', {
+            user_query: queryText
+        }, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.status === 200 && response.data.response) {
+            return response.data.response;
+        } else {
+            return `API returned an unexpected response: ${JSON.stringify(response.data)}`;
+        }
+    } catch (error) {
+        return `Error fetching answer from API: ${error.message}`;
+    }
+}
+
 function loadQuestionAnswer(context) {
     try {
         const jsonPath = path.join(context, 'src', 'qa_pairs.json');
         const data = fs.readFileSync(jsonPath, 'utf8');
         questionAnswerData = JSON.parse(data);
+
+        // Clear previous state to prevent caching issues
+        tfidfMatrix = [];
+        idfScores = {};
+        vocabulary = new Set();
 
         // Preprocess questions and build vocabulary
         const documents = questionAnswerData.map(qa => preprocessText(qa.question));
@@ -101,7 +124,6 @@ function loadQuestionAnswer(context) {
             const tf = computeTF(doc);
             return computeTFIDF(tf, idfScores);
         });
-
     } catch (error) {
         throw new Error(`Error loading qa_pairs.json: ${error.message}`);
     }
@@ -118,34 +140,19 @@ async function query(text) {
         let bestAnswer = 'No relevant answer found.';
         tfidfMatrix.forEach((docTFIDF, index) => {
             const score = cosineSimilarity(queryTFIDF, docTFIDF);
-            if (score > bestScore && score > 0.1) { // Threshold to avoid irrelevant matches
+            console.log(`Question: ${questionAnswerData[index].question}, Score: ${score}`);
+            if (score > bestScore) { // Always update bestScore to get highest match
                 bestScore = score;
                 bestAnswer = questionAnswerData[index].answer;
             }
         });
 
-        // If no relevant answer is found, call the Flask server
-        if (bestAnswer === 'No relevant answer found.') {
-            try {
-                const response = await axios.post('https://algorand-assistant-vscode.onrender.com/answer_query', {
-                    user_query: text
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+        console.log(`Best Score: ${bestScore}, Answer: ${bestAnswer}`);
 
-                // Extract the 'response' field from the Flask server's JSON
-                if (response.data && response.data.response) {
-                    bestAnswer = response.data.response;
-                } else if (response.data && response.data.error) {
-                    bestAnswer = `Server error: ${response.data.error}`;
-                } else {
-                    bestAnswer = 'Unexpected response from server.';
-                }
-            } catch (apiError) {
-                bestAnswer = `Error calling server: ${apiError.message}`;
-            }
+        // If best score is below 0.7 (70%), query the API
+        if (bestScore < 0.7) {
+            bestAnswer = await fetchAnswerFromAPI(text);
+            console.log(`API Answer: ${bestAnswer}`);
         }
 
         return bestAnswer;

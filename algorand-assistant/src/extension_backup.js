@@ -12,7 +12,7 @@ function activate(context) {
         return;
     }
 
-    // Register query command
+    // Register existing query command
     let queryDisposable = vscode.commands.registerCommand('algorandQueryAssistant.query', async () => {
         const input = await vscode.window.showInputBox({
             placeHolder: 'Enter your Algorand blockchain question',
@@ -24,15 +24,11 @@ function activate(context) {
             return;
         }
 
-        try {
-            const result = await query(input); // Await async query
-            if (typeof result === 'string' && result.startsWith('Error')) {
-                vscode.window.showErrorMessage(result);
-            } else {
-                vscode.window.showInformationMessage('Algorand Query Result', result);
-            }
-        } catch (error) {
-            vscode.window.showErrorMessage(`Query failed: ${error.message}`);
+        const result = query(input);
+        if (result.startsWith('Error')) {
+            vscode.window.showErrorMessage(result);
+        } else {
+            vscode.window.showInformationMessage('Algorand Query Result', result);
         }
     });
 
@@ -57,14 +53,10 @@ function activate(context) {
 
         // Handle messages from webview
         panel.webview.onDidReceiveMessage(
-            async (message) => {
+            message => {
                 if (message.command === 'query') {
-                    try {
-                        const result = await query(message.text); // Await async query
-                        panel.webview.postMessage({ command: 'answer', text: result });
-                    } catch (error) {
-                        panel.webview.postMessage({ command: 'answer', text: `Error: ${error.message}` });
-                    }
+                    const result = query(message.text);
+                    panel.webview.postMessage({ command: 'answer', text: result });
                 }
             },
             undefined,

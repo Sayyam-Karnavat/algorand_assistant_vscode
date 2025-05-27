@@ -2,7 +2,7 @@
   "name": "algorand-query-assistant",
   "displayName": "Algorand Assistant",
   "description": "VS Code extension for Algorand blockchain queries",
-  "version": "0.0.8",
+  "version": "0.1.2",
   "publisher": "SanyamKarnavat",
   "engines": {
     "vscode": "^1.99.0"
