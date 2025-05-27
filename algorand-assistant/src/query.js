@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 let questionAnswerData = [];
 let tfidfMatrix = [];
@@ -106,7 +107,7 @@ function loadQuestionAnswer(context) {
     }
 }
 
-function query(text) {
+async function query(text) {
     try {
         // Preprocess query
         const queryWords = preprocessText(text);
@@ -122,6 +123,30 @@ function query(text) {
                 bestAnswer = questionAnswerData[index].answer;
             }
         });
+
+        // If no relevant answer is found, call the Flask server
+        if (bestAnswer === 'No relevant answer found.') {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/answer_query', {
+                    user_query: text
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Extract the 'response' field from the Flask server's JSON
+                if (response.data && response.data.response) {
+                    bestAnswer = response.data.response;
+                } else if (response.data && response.data.error) {
+                    bestAnswer = `Server error: ${response.data.error}`;
+                } else {
+                    bestAnswer = 'Unexpected response from server.';
+                }
+            } catch (apiError) {
+                bestAnswer = `Error calling server: ${apiError.message}`;
+            }
+        }
 
         return bestAnswer;
     } catch (error) {
