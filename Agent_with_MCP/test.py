@@ -10,6 +10,6 @@ query = {
 }
 
 
-res = requests.post(url="http://127.0.0.1:5000/answer_query" , json=query)
+res = requests.post(url="https://algorand-assistant-vscode.onrender.com/answer_query" , json=query)
 
 print(res.text)
