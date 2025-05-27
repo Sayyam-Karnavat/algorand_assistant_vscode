@@ -127,7 +127,7 @@ async function query(text) {
         // If no relevant answer is found, call the Flask server
         if (bestAnswer === 'No relevant answer found.') {
             try {
-                const response = await axios.post('http://127.0.0.1:5000/answer_query', {
+                const response = await axios.post('https://algorand-assistant-vscode.onrender.com/answer_query', {
                     user_query: text
                 }, {
                     headers: {
