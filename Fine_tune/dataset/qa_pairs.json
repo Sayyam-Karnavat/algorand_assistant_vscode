@@ -1,0 +1,406 @@
+[
+    {
+      "question": "What is the purpose of ARC-0000 in the Algorand’s ecosystem?",
+      "answer": "ARC-0000 defines the Algorand Request for Comments (ARC) process, outlining how standards are proposed, reviewed, and adopted to ensure interoperability and consistency in Algorand’s blockchain development."
+    },
+    {
+      "question": "What does ARC-0003 specify for Algorand Standard Assets (ASAs)?",
+      "answer": "ARC-0003 defines the standard for fungible tokens on Algorand, specifying fields like total supply, decimals, and metadata for asset creation and management."
+    },
+    {
+      "question": "How does ARC-0004 enhance smart contract development on Algorand?",
+      "answer": "ARC-0004 introduces the Application Binary Interface (ABI), enabling standardized smart contract interfaces for predictable interactions between dApps and Algorand’s AVM."
+    },
+    {
+      "question": "What is the role of ARC-0069 in Algorand’s NFT ecosystem?",
+      "answer": "ARC-0069 defines the standard for non-fungible tokens (NFTs) on Algorand, specifying metadata and asset properties for unique digital assets."
+    },
+    {
+      "question": "What problem does ARC-0077 address in Algorand transactions?",
+      "answer": "ARC-0077 proposes a group joining mechanism, allowing users to join transaction groups atomically, improving multi-party transaction coordination."
+    },
+    {
+      "question": "How can developers implement ARC-0003 tokens using AlgoKit?",
+      "answer": "Developers can use AlgoKit’s Python or TypeScript templates to create ARC-0003 tokens by defining asset parameters (e.g., total, decimals) and deploying via the AlgoKit CLI."
+    },
+    {
+      "question": "What is the significance of the ABI in ARC-0004?",
+      "answer": "The ABI in ARC-0004 ensures smart contracts expose consistent methods and data types, enabling dApps to call contracts reliably across different implementations."
+    },
+    {
+      "question": "How does ARC-0018 facilitate on-chain randomness?",
+      "answer": "ARC-0018 defines a randomness beacon for Algorand, providing cryptographically secure random values for use in smart contracts and dApps."
+    },
+    {
+      "question": "What metadata fields are required for ARC-0069 NFTs?",
+      "answer": "ARC-0069 requires metadata like name, description, image, and optional fields like external_url, stored in a JSON object linked via the asset’s URL."
+    },
+    {
+      "question": "How does ARC-0076 improve Algorand’s transaction efficiency?",
+      "answer": "ARC-0076 introduces batch transaction signing, allowing multiple transactions to be signed in a single operation, reducing user interaction overhead."
+    },
+    {
+      "question": "What tools does the Algorand Developer Portal recommend for ARC-0004 compliance?",
+      "answer": "The portal recommends using PyTeal or TypeScript with AlgoKit to write ARC-0004-compliant smart contracts, leveraging ABI method signatures."
+    },
+    {
+      "question": "How can developers test ARC-0003 token creation on TestNet?",
+      "answer": "Use AlgoKit to deploy an ARC-0003 token on TestNet, setting up a LocalNet sandbox first to test asset creation and transactions."
+    },
+    {
+      "question": "What is the difference between ARC-0003 and ARC-0069 standards?",
+      "answer": "ARC-0003 defines fungible tokens with uniform value, while ARC-0069 defines non-fungible tokens (NFTs) with unique properties and metadata."
+    },
+    {
+      "question": "How does ARC-0004 support cross-contract composability?",
+      "answer": "ARC-0004’s ABI allows smart contracts to call each other’s methods predictably, enabling modular dApps that combine multiple contract functionalities."
+    },
+    {
+      "question": "What is the purpose of the ARC-0022 standard?",
+      "answer": "ARC-0022 defines a standard for wallet connect interfaces, enabling seamless interaction between Algorand dApps and wallets like Pera Wallet."
+    },
+    {
+      "question": "How can developers use ARC-0018 randomness in a dApp?",
+      "answer": "Developers can call the randomness beacon defined in ARC-0018 via a smart contract to obtain secure random values for applications like lotteries."
+    },
+    {
+      "question": "What is the benefit of ARC-0077’s group joining mechanism?",
+      "answer": "ARC-0077 ensures atomicity in multi-party transactions, preventing partial execution and improving reliability in complex dApps."
+    },
+    {
+      "question": "How does ARC-0003 handle token decimals?",
+      "answer": "ARC-0003 allows developers to set a decimals field, determining the token’s divisibility (e.g., decimals=2 for two decimal places)."
+    },
+    {
+      "question": "What is the role of ARC-0014 in Algorand’s ecosystem?",
+      "answer": "ARC-0014 defines a standard for asset metadata hashing, ensuring integrity and immutability of off-chain metadata for ASAs."
+    },
+    {
+      "question": "How can PyTeal be used to implement ARC-0004 contracts?",
+      "answer": "PyTeal allows developers to define ARC-0004-compliant contracts by specifying ABI methods and return types in the contract’s logic."
+    },
+    {
+      "question": "What is the purpose of ARC-0020 in token transfers?",
+      "answer": "ARC-0020 defines a standard for secure token transfers, ensuring safe and predictable asset movement between accounts."
+    },
+    {
+      "question": "How does ARC-0069 support fractional NFTs?",
+      "answer": "ARC-0069 allows NFTs to have a total supply greater than 1, enabling fractional ownership through multiple identical NFTs."
+    },
+    {
+      "question": "What is the significance of ARC-0076’s batch signing?",
+      "answer": "ARC-0076 reduces the number of user signatures needed for complex transactions, improving dApp usability and efficiency."
+    },
+    {
+      "question": "How can developers validate ARC-0003 token parameters?",
+      "answer": "Use AlgoKit’s asset creation API to validate parameters like total supply and decimals before deploying to the Algorand blockchain."
+    },
+    {
+      "question": "What is the role of ARC-0025 in Algorand’s governance?",
+      "answer": "ARC-0025 defines a standard for decentralized governance proposals, enabling community-driven decision-making on Algorand."
+    },
+    {
+      "question": "How does ARC-0004 handle method arguments in smart contracts?",
+      "answer": "ARC-0004 specifies method arguments using ABI types (e.g., uint64, string), ensuring consistent data encoding for contract calls."
+    },
+    {
+      "question": "What is the purpose of ARC-0019 for Algorand assets?",
+      "answer": "ARC-0019 defines a standard for asset clawback, allowing issuers to reclaim assets under specific conditions."
+    },
+    {
+      "question": "How can developers implement ARC-0022 wallet integration?",
+      "answer": "Use the WalletConnect protocol with ARC-0022 to connect dApps to wallets, enabling transaction signing and account management."
+    },
+    {
+      "question": "What is the benefit of ARC-0018’s randomness beacon?",
+      "answer": "ARC-0018 provides a verifiable, tamper-proof source of randomness, critical for fair and secure dApp mechanics like gaming."
+    },
+    {
+      "question": "How does ARC-0077 ensure transaction atomicity?",
+      "answer": "ARC-0077 ensures all transactions in a group are executed together or not at all, maintaining consistency in multi-party interactions."
+    },
+    {
+      "question": "What metadata hashing method does ARC-0014 recommend?",
+      "answer": "ARC-0014 recommends SHA-256 for hashing asset metadata, ensuring integrity when stored off-chain."
+    },
+    {
+      "question": "How can developers debug ARC-0004 smart contracts?",
+      "answer": "Use AlgoKit’s debugging tools and the Algorand dryrun REST endpoint to simulate and debug ARC-0004 contract execution."
+    },
+    {
+      "question": "What is the purpose of ARC-0028 in Algorand’s ecosystem?",
+      "answer": "ARC-0028 defines a standard for state proofs, enabling trustless cross-chain communication with Algorand."
+    },
+    {
+      "question": "How does ARC-0069 handle NFT royalties?",
+      "answer": "ARC-0069 supports royalty fields in metadata, allowing creators to specify a percentage of secondary sale proceeds."
+    },
+    {
+      "question": "What is the role of ARC-0020 in preventing token loss?",
+      "answer": "ARC-0020 enforces safe transfer rules, preventing tokens from being sent to unopted-in accounts."
+    },
+    {
+      "question": "How can developers use ARC-0025 for governance proposals?",
+      "answer": "Developers can submit ARC-0025 proposals via Algorand’s governance platform, including a JSON schema with proposal details."
+    },
+    {
+      "question": "What is the significance of ARC-0019’s clawback feature?",
+      "answer": "ARC-0019’s clawback allows asset issuers to reverse transactions, useful for compliance or error correction."
+    },
+    {
+      "question": "How does ARC-0004 support dynamic contract upgrades?",
+      "answer": "ARC-0004 allows contracts to be upgraded while maintaining ABI compatibility, ensuring existing dApps continue to function."
+    },
+    {
+      "question": "What is the purpose of ARC-0032 in Algorand?",
+      "answer": "ARC-0032 defines a standard for application call transactions, standardizing how dApps interact with smart contracts."
+    },
+    {
+      "question": "How can developers implement ARC-0018 randomness in PyTeal?",
+      "answer": "Use PyTeal to call the randomness beacon’s application ID and retrieve random values for use in contract logic."
+    },
+    {
+      "question": "What is the benefit of ARC-0076 for dApp UX?",
+      "answer": "ARC-0076 reduces the number of user prompts for transaction signing, streamlining the dApp user experience."
+    },
+    {
+      "question": "How does ARC-0003 ensure token interoperability?",
+      "answer": "ARC-0003 standardizes token creation parameters, ensuring tokens are compatible with wallets and dApps on Algorand."
+    },
+    {
+      "question": "What is the role of ARC-0040 in Algorand’s ecosystem?",
+      "answer": "ARC-0040 defines a standard for stateful smart contract storage, optimizing data management in dApps."
+    },
+    {
+      "question": "How can developers use ARC-0022 with Pera Wallet?",
+      "answer": "Integrate ARC-0022’s WalletConnect API to enable Pera Wallet users to sign transactions and interact with dApps."
+    },
+    {
+      "question": "What is the purpose of ARC-0055 for Algorand developers?",
+      "answer": "ARC-0055 defines a standard for cross-chain asset transfers, facilitating interoperability with other blockchains."
+    },
+    {
+      "question": "How does ARC-0069 support NFT marketplaces?",
+      "answer": "ARC-0069’s metadata standard enables NFT marketplaces to display consistent asset details like name, image, and royalties."
+    },
+    {
+      "question": "What is the benefit of ARC-0028’s state proofs?",
+      "answer": "ARC-0028’s state proofs allow Algorand to verify transactions on other chains, enabling trustless bridging."
+    },
+    {
+      "question": "How can developers test ARC-0077 group joining locally?",
+      "answer": "Use AlgoKit’s LocalNet to simulate ARC-0077 group joining transactions, testing atomicity and multi-party coordination."
+    },
+    {
+      "question": "What is the role of ARC-0014 in preventing metadata tampering?",
+      "answer": "ARC-0014’s hashing ensures off-chain metadata matches on-chain references, preventing unauthorized changes."
+    },
+    {
+      "question": "How does ARC-0004 handle contract errors?",
+      "answer": "ARC-0004 defines standard error codes in the ABI, allowing dApps to handle contract failures predictably."
+    },
+    {
+      "question": "What is the purpose of ARC-0060 in Algorand?",
+      "answer": "ARC-0060 defines a standard for decentralized identity, enabling secure user authentication in dApps."
+    },
+    {
+      "question": "How can developers use ARC-0020 for safe token transfers?",
+      "answer": "Implement ARC-0020’s transfer logic in a smart contract to check opt-in status before sending tokens."
+    },
+    {
+      "question": "What is the benefit of ARC-0019 for regulatory compliance?",
+      "answer": "ARC-0019’s clawback feature allows issuers to comply with regulations by reclaiming assets when required."
+    },
+    {
+      "question": "How does ARC-0076 integrate with AlgoKit?",
+      "answer": "AlgoKit supports ARC-0076 by providing APIs for batch transaction signing, simplifying dApp development."
+    },
+    {
+      "question": "What is the role of ARC-0025 in community governance?",
+      "answer": "ARC-0025 enables community members to propose and vote on protocol changes, fostering decentralization."
+    },
+    {
+      "question": "How can developers use ARC-0018 for gaming dApps?",
+      "answer": "Incorporate ARC-0018’s randomness beacon to ensure fair outcomes in gaming mechanics like loot drops."
+    },
+    {
+      "question": "What is the purpose of ARC-0072 in Algorand?",
+      "answer": "ARC-0072 defines a standard for oracle integration, allowing smart contracts to access off-chain data."
+    },
+    {
+      "question": "How does ARC-0003 support stablecoin development?",
+      "answer": "ARC-0003’s fungible token standard supports stablecoins by defining precise decimals and supply parameters."
+    },
+    {
+      "question": "What is the benefit of ARC-0004’s ABI for dApp developers?",
+      "answer": "ARC-0004’s ABI simplifies dApp development by providing a standardized interface for contract interactions."
+    },
+    {
+      "question": "How can developers implement ARC-0069 NFT minting?",
+      "answer": "Use AlgoKit to create an ARC-0069 NFT by setting a total supply of 1 and linking JSON metadata via the asset URL."
+    },
+    {
+      "question": "What is the role of ARC-0028 in cross-chain bridges?",
+      "answer": "ARC-0028’s state proofs enable secure cross-chain asset transfers by verifying Algorand’s state on other chains."
+    },
+    {
+      "question": "How does ARC-0077 handle multi-party disputes?",
+      "answer": "ARC-0077 ensures all parties in a transaction group agree, preventing disputes by enforcing atomic execution."
+    },
+    {
+      "question": "What is the purpose of ARC-0014’s metadata hash?",
+      "answer": "ARC-0014’s metadata hash links on-chain assets to off-chain data, ensuring immutability and authenticity."
+    },
+    {
+      "question": "How can developers use ARC-0022 for mobile dApps?",
+      "answer": "Integrate ARC-0022’s WalletConnect to enable mobile users to connect wallets and sign transactions in dApps."
+    },
+    {
+      "question": "What is the benefit of ARC-0019’s clawback for issuers?",
+      "answer": "ARC-0019’s clawback allows issuers to reverse erroneous or fraudulent transactions, enhancing asset control."
+    },
+    {
+      "question": "How does ARC-0004 support contract versioning?",
+      "answer": "ARC-0004’s ABI allows contracts to maintain consistent interfaces across versions, supporting seamless upgrades."
+    },
+    {
+      "question": "What is the purpose of ARC-0073 in Algorand?",
+      "answer": "ARC-0073 defines a standard for subscription-based payments, enabling recurring transactions in dApps."
+    },
+    {
+      "question": "How can developers test ARC-0003 tokens locally?",
+      "answer": "Use AlgoKit’s LocalNet to create and test ARC-0003 tokens in a sandbox environment before deploying to TestNet."
+    },
+    {
+      "question": "What is the role of ARC-0069 in digital collectibles?",
+      "answer": "ARC-0069 standardizes digital collectibles by defining unique NFTs with metadata for ownership and display."
+    },
+    {
+      "question": "How does ARC-0076 optimize transaction throughput?",
+      "answer": "ARC-0076’s batch signing reduces signature overhead, allowing more transactions to be processed efficiently."
+    },
+    {
+      "question": "What is the benefit of ARC-0025 for Algorand’s ecosystem?",
+      "answer": "ARC-0025 fosters community-driven innovation by standardizing governance proposals and voting."
+    },
+    {
+      "question": "How can developers use ARC-0018 for secure lotteries?",
+      "answer": "Implement ARC-0018’s randomness beacon in a smart contract to ensure fair and verifiable lottery outcomes."
+    },
+    {
+      "question": "What is the purpose of ARC-0048 in Algorand?",
+      "answer": "ARC-0048defines a standard for multi-signature accounts, enhancing security for shared asset management."
+    },
+    {
+      "question": "How does ARC-0004 handle complex data types?",
+      "answer": "ARC-0004’s ABI supports complex types like arrays and structs, enabling rich data handling in contracts."
+    },
+    {
+      "question": "What is the role of ARC-0020 in dApp security?",
+      "answer": "ARC-0020’s safe transfer rules prevent token loss, enhancing the security of dApp transactions."
+    },
+    {
+      "question": "How can developers implement ARC-0028 state proofs?",
+      "answer": "Use ARC-0028’s state proof verification logic in a smart contract to validate cross-chain transactions."
+    },
+    {
+      "question": "What is the benefit of ARC-0077 for DeFi dApps?",
+      "answer": "ARC-0077’s group joining ensures atomic execution of DeFi transactions, preventing partial failures."
+    },
+    {
+      "question": "How does ARC-0014 ensure metadata integrity?",
+      "answer": "ARC-0014 uses SHA-256 hashing to link on-chain assets to off-chain metadata, ensuring tamper-proof data."
+    },
+    {
+      "question": "What is the purpose of ARC-0062 in Algorand?",
+      "answer": "ARC-0062 defines a standard for decentralized voting, enabling secure on-chain polls and elections."
+    },
+    {
+      "question": "How can developers use ARC-0003 for crowdfunding?",
+      "answer": "Create an ARC-0003 token to represent crowdfunding shares, using a smart contract to manage distribution."
+    },
+    {
+      "question": "What is the benefit of ARC-0004 for dApp interoperability?",
+      "answer": "ARC-0004’s ABI ensures dApps can interact with any compliant smart contract, enhancing ecosystem interoperability."
+    },
+    {
+      "question": "How does ARC-0069 support NFT provenance?",
+      "answer": "ARC-0069’s metadata includes creator and ownership history, ensuring verifiable NFT provenance."
+    },
+    {
+      "question": "What is the role of ARC-0076 in reducing gas costs?",
+      "answer": "ARC-0076’s batch signing reduces the number of transactions, lowering overall gas costs for users."
+    },
+    {
+      "question": "How can developers use ARC-0025 for protocol upgrades?",
+      "answer": "Submit ARC-0025 proposals to suggest protocol upgrades, engaging the community in governance votes."
+    },
+    {
+      "question": "What is the purpose of ARC-0019 in asset management?",
+      "answer": "ARC-0019’s clawback feature allows issuers to manage assets by reversing transactions when needed."
+    },
+    {
+      "question": "How does ARC-0004 optimize contract execution?",
+      "answer": "ARC-0004’s ABI reduces execution overhead by standardizing method calls, improving contract efficiency."
+    },
+    {
+      "question": "What is the benefit of ARC-0018 for prediction markets?",
+      "answer": "ARC-0018’s randomness beacon ensures fair outcome generation, critical for prediction market integrity."
+    },
+    {
+      "question": "How can developers implement ARC-0077 in TypeScript?",
+      "answer": "Use AlgoKit’s TypeScript SDK to create ARC-0077 group joining transactions, ensuring atomic execution."
+    },
+    {
+      "question": "What is the role of ARC-0022 in dApp scalability?",
+      "answer": "ARC-0022’s wallet integration standardizes user interactions, enabling scalable dApp adoption."
+    },
+    {
+      "question": "How does ARC-0069 handle NFT metadata updates?",
+      "answer": "ARC-0069 allows metadata updates by reissuing the asset with a new URL, maintaining on-chain integrity."
+    },
+    {
+      "question": "What is the purpose of ARC-0074 in Algorand?",
+      "answer": "ARC-0074 defines a standard for escrow accounts, securing funds in multi-party transactions."
+    },
+    {
+      "question": "How can developers use ARC-0003 for loyalty programs?",
+      "answer": "Create an ARC-0003 token for loyalty points, using a smart contract to manage issuance and redemption."
+    },
+    {
+      "question": "What is the benefit of ARC-0004 for contract testing?",
+      "answer": "ARC-0004’s ABI enables standardized testing frameworks, simplifying contract verification and debugging."
+    },
+    {
+      "question": "How does ARC-0028 ensure cross-chain security?",
+      "answer": "ARC-0028’s state proofs cryptographically verify Algorand’s state, ensuring secure cross-chain interactions."
+    },
+    {
+      "question": "What is the role of ARC-0077 in supply chain dApps?",
+      "answer": "ARC-0077 ensures atomic multi-party transactions, critical for supply chain coordination and trust."
+    },
+    {
+      "question": "How can developers validate ARC-0014 metadata hashes?",
+      "answer": "Use a SHA-256 library to compute metadata hashes and compare them with on-chain values for ARC-0014."
+    },
+    {
+      "question": "What is the purpose of ARC-0066 in Algorand?",
+      "answer": "ARC-0066 defines a standard for tokenized real-world assets, enabling their representation on Algorand."
+    },
+    {
+      "question": "How does ARC-0004 support contract modularity?",
+      "answer": "ARC-0004’s ABI allows contracts to be split into modular components, improving maintainability and reuse."
+    },
+    {
+      "question": "What is the benefit of ARC-0020 for user trust?",
+      "answer": "ARC-0020’s safe transfer rules prevent accidental token loss, increasing user confidence in dApps."
+    },
+    {
+      "question": "How can developers use ARC-0025 for community projects?",
+      "answer": "Submit ARC-0025 proposals to fund community projects, leveraging Algorand’s governance platform."
+    },
+    {
+      "question": "What is the role of ARC-0018 in ensuring fairness?",
+      "answer": "ARC-0018’s randomness beacon provides unbiased outcomes, ensuring fairness in dApp mechanics."
+    }
+  ]
