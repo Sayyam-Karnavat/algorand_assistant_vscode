@@ -43,3 +43,31 @@ class ModelConfig:
             elif "v100" in gpu_name or "t4" in gpu_name:
                 return torch.float16
         return None
+
+def load_model_and_tokenizer(config):
+    """Load model and tokenizer with error handling."""
+    try:
+        print(f"Loading model: {config.model_name}")
+        print(f"Max sequence length: {config.max_seq_length}")
+        print(f"4-bit quantization: {config.load_in_4bit}")
+        
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name=config.model_name,
+            max_seq_length=config.max_seq_length,
+            dtype=config.get_optimal_dtype(),
+            load_in_4bit=config.load_in_4bit,
+            device_map=config.device_map,
+            trust_remote_code=config.trust_remote_code,
+            # token="hf_...", # Add your HuggingFace token if needed
+        )
+        
+        print("✓ Model and tokenizer loaded successfully")
+        return model, tokenizer
+        
+    except Exception as e:
+        print(f"✗ Error loading model: {e}")
+        raise
+
+# Initialize configuration and load model
+config = ModelConfig()
+model, tokenizer = load_model_and_tokenizer(config)
