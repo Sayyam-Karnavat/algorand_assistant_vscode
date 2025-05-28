@@ -101,3 +101,17 @@ trainer = SFTTrainer(
         report_to = "none", # Use this for WandB etc
     ),
 )
+trainer_stats = trainer.train()
+
+FastLanguageModel.for_inference(model) # Enable native 2x faster inference
+inputs = tokenizer(
+[
+    alpaca_prompt.format(
+        "What is the use of arc 69 in algorand blockchain."
+        "",
+    )
+], return_tensors = "pt").to("cuda")
+
+outputs = model.generate(**inputs, max_new_tokens = 64, use_cache = True)
+tokenizer.batch_decode(outputs)
+
