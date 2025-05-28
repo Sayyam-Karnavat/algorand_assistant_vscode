@@ -26,10 +26,6 @@ text = open(filepath,'rb').read().decode('utf-8').lower()
 unique_characters = sorted(set(text))
 
 
-# We need to convert out text file into numerical representation to train our neural network
-# hence making a dictionary of all unique characters 
-# It is like label encoding of all characters
-
 char_to_index = dict((i,c) for c,i in enumerate(unique_characters))
 
 print("character to index : ")
@@ -41,3 +37,17 @@ print(char_to_index)
 print("Index to character : ")
 index_to_char = dict((c,i) for c,i in enumerate(unique_characters))
 print(index_to_char)
+
+
+
+sentences = []
+next_characters = []
+
+seq_length = 40 
+step_size = 3
+
+
+
+for i in range(0,len(text)-seq_length,step_size):
+    sentences.append(text[i : i + seq_length])# This is our feature data
+    next_characters.append(text[i+seq_length])#This is our target data (this statement stores next single character)
