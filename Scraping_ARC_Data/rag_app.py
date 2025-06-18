@@ -1,57 +1,66 @@
-from sentence_transformers import SentenceTransformer , util
+from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import json
 import os
 import sys
 
+VECTOR_DIR = "extension/data"
+TEXT_FILE = "arc_standards.txt"
+EMBEDDING_FILE = os.path.join(VECTOR_DIR, "embeddings.npy")
+DOCUMENT_FILE = os.path.join(VECTOR_DIR, "documents.json")
 
-VECTOR_DIR = "extention/data"
+def get_model():
+    return SentenceTransformer("all-MiniLM-L6-v2")
 
-def text_to_vector(text_file="arc_standards.txt" ):
+def text_to_vector(text_file=TEXT_FILE, model=None):
+    os.makedirs(VECTOR_DIR, exist_ok=True)
 
-    
-
-    if not os.path.exists(VECTOR_DIR):
-        os.makedirs(VECTOR_DIR)
-
-    with open( text_file, "r" , encoding="utf-8") as f:
+    with open(text_file, "r", encoding="utf-8") as f:
         documents = [line.strip() for line in f if line.strip()]
-    embeddings = model.encode(documents)
 
-
-    np.save(os.path.join(VECTOR_DIR,"embeddings.npy") , embeddings)
-    with open(os.path.join(VECTOR_DIR,"documents.json") , "w") as f:
-        json.dump(documents , f)
-
+    embeddings = model.encode(documents, show_progress_bar=True, convert_to_numpy=True)
+    
+    np.save(EMBEDDING_FILE, embeddings)
+    with open(DOCUMENT_FILE, "w", encoding="utf-8") as f:
+        json.dump(documents, f, ensure_ascii=False)
 
 def load_knowledge_vector():
-    with open(os.path.join(VECTOR_DIR,'documents.json'), 'r') as f:
+    if not os.path.exists(EMBEDDING_FILE) or not os.path.exists(DOCUMENT_FILE):
+        raise FileNotFoundError("Embedding or document file not found. Run `text_to_vector()` first.")
+    
+    embeddings = np.load(EMBEDDING_FILE)
+    with open(DOCUMENT_FILE, "r", encoding="utf-8") as f:
         documents = json.load(f)
-    embeddings = np.load(os.path.join(VECTOR_DIR,'embeddings.npy'))
 
+    return embeddings, documents
 
-    return embeddings , documents
-
-def query(text):
-    query_embedding = model.encode([text])[0]
+def query(text, model, embeddings, documents, top_k=1):
+    query_embedding = model.encode(text, convert_to_numpy=True)
     scores = util.cos_sim(query_embedding, embeddings)[0]
-    best_idx = scores.argmax()
-    return documents[best_idx]
+    top_k_indices = np.argsort(scores)[-top_k:][::-1]
+    
+    results = [(documents[idx], float(scores[idx])) for idx in top_k_indices]
+    return results
 
+def main():
+    model = get_model()
+
+    if not os.path.exists(EMBEDDING_FILE) or not os.path.exists(DOCUMENT_FILE):
+        print("Generating embeddings...")
+        text_to_vector(TEXT_FILE, model)
+
+    embeddings, documents = load_knowledge_vector()
+
+    print("RAG System Ready. Type 'quit' to exit.")
+    while True:
+        user_query = input("\nQuery: ").strip()
+        if user_query.lower() in ("quit", "exit"):
+            print("Exiting...")
+            break
+
+        results = query(user_query, model, embeddings, documents)
+        best_result, score = results[0]
+        print(f"\nTop Match (Score: {score:.4f}):\n{best_result}")
 
 if __name__ == "__main__":
-    
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-
-    text_to_vector()
-    embeddings , documents = load_knowledge_vector()
-
-    while True:
-
-        user_query = input("Query :- ")
-        response = query(text=user_query)
-
-        if user_query == "quit":
-            sys.exit(0)
-
-        print(response)
+    main()
