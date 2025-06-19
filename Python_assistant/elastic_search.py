@@ -61,7 +61,7 @@ def elasticsearch_search(query: str, es, index_name: str):
     q = {
         "multi_match": {
             "query": {"match": {"question": tokens}},
-            "type": "most_fields"
+            "type": "most_common"
         }
     }
     res = es.search(index=index_name, body={"query": q})
