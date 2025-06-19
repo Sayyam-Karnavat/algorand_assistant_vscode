@@ -56,7 +56,6 @@ def setup_elasticsearch_index(qa_pairs: List[Dict], index_name: str = "qa_pairs"
     return es, index_name
 
 def elasticsearch_search(query: str, es, index_name: str):
-    """Perform Elasticsearch query to search for answers."""
     tokens = nltk.word_tokenize(query)
     
     q = {
